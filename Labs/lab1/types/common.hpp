@@ -2,7 +2,9 @@
 
 // std
 #include <list>
+#include <queue>
 #include <set>
+#include <stack>
 #include <unordered_map>
 #include <utility>
 #include <vector>
@@ -21,3 +23,9 @@ using Pair = std::pair<T, U>;
 
 template <typename T>
 using Vector = std::vector<T>;
+
+template <typename T>
+using Stack = std::stack<T>;
+
+template<typename T>
+using Queue = std::queue<T>;

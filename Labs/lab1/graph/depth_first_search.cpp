@@ -3,30 +3,30 @@
 // std
 #include <iterator>
 
-#include "graph/graph.hpp"
-#include "graph/pattern_search_result.hpp"
-#include "graph/search_params.hpp"
-#include "graph/search_result.hpp"
+#include "graph.hpp"
+#include "pattern_search_result.hpp"
+#include "depth_search_params.hpp"
+#include "search_result.hpp"
 #include "types/graph.hpp"
 #include "utils/convert.hpp"
 
 namespace {
-PatternSearchResult sPatternSearch(SearchParams& p) {
-    for (size_t i = 0; i < p.edges.size(); ++i) {
-        if (p.visited[i]) {
+PatternSearchResult sPatternSearch(DepthSearchParams& p) {
+    for (size_t i = 0; i < p.m_edges.size(); ++i) {
+        if (p.m_visited[i]) {
             continue;
         }
 
-        const auto& [from, to] = p.edges[i];
+        const auto& [from, to] = p.m_edges[i];
 
-        if (p.opened_vertices.front() == from) {
-            p.opened_vertices.push_front(to);
+        if (p.m_opened_vertices.top() == from) {
+            p.m_opened_vertices.push(to);
 
-            if (to == p.to) {
+            if (to == p.m_to) {
                 return PatternSearchResult::kFoundLastEdge;
             }
 
-            p.visited[i] = true;
+            p.m_visited[i] = true;
             return PatternSearchResult::kFoundNextEdge;
         }
     }
@@ -36,10 +36,10 @@ PatternSearchResult sPatternSearch(SearchParams& p) {
 }  // namespace
 
 SearchResult depthFirstSearch(const Graph& graph, Vertex from, Vertex to) {
-    SearchParams p{graph, from, to};
-    p.opened_vertices.push_back(from);
+    DepthSearchParams p{graph, from, to};
+    p.m_opened_vertices.push(from);
 
-    if (!p.vertices.contains(from) || !p.vertices.contains(to)) {
+    if (!p.m_vertices.contains(from) || !p.m_vertices.contains(to)) {
         return {};
     }
 
@@ -47,19 +47,20 @@ SearchResult depthFirstSearch(const Graph& graph, Vertex from, Vertex to) {
         return {{from}, {}};
     }
 
-    while (true) {
+    while (!p.m_opened_vertices.empty()) {
         const auto result = sPatternSearch(p);
         if (result == PatternSearchResult::kFoundLastEdge) {
-            return { Utils::reverseConverted(p.opened_vertices),
-                    Utils::converted(p.closed_vertices)};
+            return { Utils::openedConverted(p.m_opened_vertices),
+                    Utils::converted(p.m_closed_vertices)};
         }
         if (result == PatternSearchResult::kNotFound) {
-            if (std::next(p.opened_vertices.begin()) != p.opened_vertices.end()) {
-                p.closed_vertices.push_front(p.opened_vertices.front());
-                p.opened_vertices.pop_front();
-            } else if (p.opened_vertices.front() == p.from) {
-                return {{}, Utils::converted(p.closed_vertices)};
+            if (p.m_opened_vertices.size() > 1) {
+                p.m_closed_vertices.push_front(p.m_opened_vertices.top());
+                p.m_opened_vertices.pop();
+            } else if (p.m_opened_vertices.top() == p.m_from) {
+                return {{}, Utils::converted(p.m_closed_vertices)};
             }
         }
     }
+    return {};
 }

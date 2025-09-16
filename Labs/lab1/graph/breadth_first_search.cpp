@@ -1,42 +1,36 @@
 #include "graph/breadth_first_search.hpp"
 
-#include "graph/graph.hpp"
-#include "graph/pattern_search_result.hpp"
-#include "graph/search_params.hpp"
-#include "graph/search_result.hpp"
+#include "breadth_search_params.hpp"
+#include "graph.hpp"
+#include "pattern_search_result.hpp"
+#include "search_result.hpp"
 #include "types/common.hpp"
 #include "types/graph.hpp"
 #include "utils/convert.hpp"
 
 namespace {
-struct BreadthFirstSearchParams : SearchParams {
-    using SearchParams::SearchParams;
-
-    UMap<Vertex, Vertex> back;
-};
-
-PatternSearchResult sPatternSearch(BreadthFirstSearchParams& p) {
+PatternSearchResult sPatternSearch(BreadthSearchParams& p) {
     auto result = PatternSearchResult::kNotFound;
 
-    for (size_t i = 0; i < p.edges.size(); ++i) {
-        if (p.visited[i]) {
+    for (size_t i = 0; i < p.m_edges.size(); ++i) {
+        if (p.m_visited[i]) {
             continue;
         }
 
-        const auto& [from, to] = p.edges[i];
+        const auto& [from, to] = p.m_edges[i];
 
-        if (p.opened_vertices.front() == from) {
-            p.opened_vertices.push_back(to);
+        if (p.m_opened_vertices.front() == from) {
+            p.m_opened_vertices.push(to);
 
-            if (!p.back.contains(to)) {
-                p.back[to] = from;
+            if (!p.m_back_vertex.contains(to)) {
+                p.m_back_vertex[to] = from;
             }
 
-            if (to == p.to) {
+            if (to == p.m_to) {
                 return PatternSearchResult::kFoundLastEdge;
             }
 
-            p.visited[i] = true;
+            p.m_visited[i] = true;
             result = PatternSearchResult::kFoundNextEdge;
         }
     }
@@ -46,10 +40,10 @@ PatternSearchResult sPatternSearch(BreadthFirstSearchParams& p) {
 }  // namespace
 
 SearchResult breadthFirstSearch(const Graph& graph, Vertex from, Vertex to) {
-    BreadthFirstSearchParams p{graph, from, to};
-    p.opened_vertices.push_back(from);
+    BreadthSearchParams p{graph, from, to};
+    p.m_opened_vertices.push(from);
 
-    if (!p.vertices.contains(from) || !p.vertices.contains(to)) {
+    if (!p.m_vertices.contains(from) || !p.m_vertices.contains(to)) {
         return {};
     }
 
@@ -57,29 +51,28 @@ SearchResult breadthFirstSearch(const Graph& graph, Vertex from, Vertex to) {
         return {{from}, {}};
     }
 
-    while (!p.opened_vertices.empty()) {
+    while (!p.m_opened_vertices.empty()) {
         const auto result = sPatternSearch(p);
-        p.closed_vertices.push_front(p.opened_vertices.front());
-        p.opened_vertices.pop_front();
+        p.m_closed_vertices.push_front(p.m_opened_vertices.front());
+        p.m_opened_vertices.pop();
 
         if (result == PatternSearchResult::kFoundLastEdge) {
-            // p.closed_vertices.push_front(p.to);
             break;
         }
     }
 
-    auto it = p.back.find(to);
-    if (it == p.back.end()) {
-        return {{}, Utils::converted(p.closed_vertices)};
+    auto it = p.m_back_vertex.find(to);
+    if (it == p.m_back_vertex.end()) {
+        return {{}, Utils::converted(p.m_closed_vertices)};
     }
 
     Vector<Vertex> path{to};
-    do {  // NOLINT(cppcoreguidelines-avoid-do-while)
+    do {
         path.push_back(it->second);
-        it = p.back.find(it->second);
-    } while (it != p.back.end() && it->first != from);
+        it = p.m_back_vertex.find(it->second);
+    } while (it != p.m_back_vertex.end() && it->first != from);
 
     std::reverse(path.begin(), path.end());
 
-    return {path, Utils::converted(p.closed_vertices)};
+    return {path, Utils::converted(p.m_closed_vertices)};
 }

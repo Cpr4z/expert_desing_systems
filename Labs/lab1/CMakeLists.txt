@@ -13,6 +13,8 @@ set(
     graph/pattern_search_result.hpp
     graph/search_params.hpp
     graph/search_result.hpp
+    graph/breadth_search_params.hpp
+    graph/depth_search_params.hpp
     types/common.hpp
     types/graph.hpp
     utils/convert.hpp

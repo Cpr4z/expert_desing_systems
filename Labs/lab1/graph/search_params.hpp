@@ -7,14 +7,13 @@ class Graph;
 struct SearchParams {
     SearchParams(const Graph& graph, Vertex from, Vertex to);
 
-    const Vertices& vertices;
-    const Edges& edges;
+    const Vertices& m_vertices;
+    const Edges& m_edges;
 
-    Vertex from;
-    Vertex to;
+    Vertex m_from;
+    Vertex m_to;
 
-    List<Vertex> opened_vertices;
-    List<Vertex> closed_vertices;
+    List<Vertex> m_closed_vertices;
 
-    Vector<bool> visited;
+    Vector<bool> m_visited;
 };

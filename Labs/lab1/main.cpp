@@ -21,6 +21,7 @@ namespace {
  */
 int main() {
     const auto runTest = [](const fs::path& test_file){
+        std::cout << "Start test " + test_file.filename().string() << std::endl;
         const auto graph = Graph::readFromFile(test_file);
         for (auto v : graph.vertices()) {
             for (auto u : graph.vertices()) {
@@ -41,6 +42,7 @@ int main() {
                 }
             }
         }
+        std::cout << "##########################################" << std::endl;
         Utils::visualizeGraph(graph, test_file);
     };
 

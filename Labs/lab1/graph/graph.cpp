@@ -12,15 +12,15 @@
 #include "utils/io_utils.hpp"
 
 Graph::Graph(Vertices vertices, Edges edges)
-        : vertices_{std::move(vertices)}, edges_{std::move(edges)} {
-    for (const auto& [from, to] : edges_) {
+        : m_vertices{std::move(vertices)}, m_edges{std::move(edges)} {
+    for (const auto& [from, to] : m_edges) {
         checkVertex_(from);
         checkVertex_(to);
     }
 }
 
 void Graph::checkVertex_(const Vertex& v) const {
-    if (!vertices_.contains(v)) {
+    if (!m_vertices.contains(v)) {
         throw std::invalid_argument("[Graph::checkVertex_] \"" + std::to_string(v) +
                                     "\" is not in V");
     }
@@ -62,12 +62,12 @@ std::istream& operator>>(std::istream& is, Graph& graph) {
 }
 
 std::ostream& operator<<(std::ostream& os, const Graph& graph) {
-    os << graph.vertices_.size() << "\n";
-    Utils::join(graph.vertices_, os);
+    os << graph.m_vertices.size() << "\n";
+    Utils::join(graph.m_vertices, os);
     os << "\n";
 
-    os << graph.edges_.size() << "\n";
-    for (auto&& [from, to] : graph.edges_) {
+    os << graph.m_edges.size() << "\n";
+    for (auto&& [from, to] : graph.m_edges) {
         os << from << " -> " << to << "\n";
     }
     return os;
