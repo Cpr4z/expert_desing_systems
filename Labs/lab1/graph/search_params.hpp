@@ -7,13 +7,16 @@ class Graph;
 struct SearchParams {
     SearchParams(const Graph& graph, Vertex from, Vertex to);
 
-    const Vertices& m_vertices;
-    const Edges& m_edges;
+    // База знаний
+    const Vertices& m_vertices; // список вершин графа
+    const Edges& m_edges; // список ребер графа
 
-    Vertex m_from;
-    Vertex m_to;
+    Vertex m_from; // начальная вершина
+    Vertex m_to; // целевая вершина
 
+    // список закрытых вершин
     List<Vertex> m_closed_vertices;
 
+    // список посещенных ребер
     Vector<bool> m_visited;
 };

@@ -18,7 +18,6 @@ PatternSearchResult sPatternSearch(DepthSearchParams& p) {
         }
 
         const auto& [from, to] = p.m_edges[i];
-
         if (p.m_opened_vertices.top() == from) {
             p.m_opened_vertices.push(to);
 

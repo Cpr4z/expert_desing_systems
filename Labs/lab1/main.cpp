@@ -40,6 +40,9 @@ int main() {
                     Utils::join(bfs.path, std::cout, " -> ");
                     std::cout << '\n';
                 }
+                else {
+                    std::cout << "Путь от вершины " << v << " до " << u << " не найден" << ":\n";
+                }
             }
         }
         std::cout << "##########################################" << std::endl;
