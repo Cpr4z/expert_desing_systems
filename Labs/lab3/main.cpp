@@ -1,39 +1,41 @@
 #include <iostream>
 
-#include "graph/breadth_first_search.hpp"
+#include "graph/depth_first_search.hpp"
 #include "graph/graph.hpp"
 #include "types/graph.hpp"
 #include "utils/io_utils.hpp"
 
 int main() {
-    const auto graph = HyperGraph::readFromFile("../tests/graph1.txt");
-
+    const auto graph = HyperGraph::readFromFile("../tests/graph1_.txt");
     std::cout << "========== Граф И/ИЛИ ==========\n" << graph;
 
-//    const Vertices from{5, 6, 10, 12, 13, 19, 20};
-//    const Vertex to = 14;
+    std::cout << "Введите стартовую вершину:" << std::endl;
 
-    std::cout << "Введите стартовые вершины:" << std::endl;
-    Vertices from;
     std::string vert_number;
+    std::cin >> vert_number;
+    const Vertex from(std::atoi(vert_number.c_str()));
+    vert_number.clear();
+
+    std::cout << "Введите целевые вершины:" << std::endl;
+
+    Vertices to;
     while (std::getline(std::cin, vert_number))
     {
         if (vert_number.empty()) {
             break;
         }
-        from.emplace(std::atoi(vert_number.c_str()));
+        to.emplace(std::atoi(vert_number.c_str()));
     }
 
-    std::cout << "Введите целевую вершину:" << std::endl;
-    std::cin >> vert_number;
-    const Vertex to(std::atoi(vert_number.c_str()));
+//    const Vertex from = 14;
+//    const Vertices to{18, 19, 20, 32};
 
+    std::cout << "========== Цель ================\n" << from << '\n';
     std::cout << "========== Данные ==============\n"
-              << (join(from, std::cout), '\n');
-    std::cout << "========== Цель ================\n" << to << '\n';
+              << (join(to, std::cout), '\n');
 
     std::cout << "========== Трассировка =========\n";
-    const auto res = breadthFirstSearch(graph, from, to);
+    const auto res = depthFirstSearch(graph, from, to);
 
     std::cout << "========== Результат ===========\n"
               << "Путь ";
