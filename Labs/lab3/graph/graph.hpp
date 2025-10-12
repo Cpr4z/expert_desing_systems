@@ -7,10 +7,10 @@
 
 class HyperGraph {
 public:
-    explicit HyperGraph(Vertices vertices = {}, Edges edges = {});
+    explicit HyperGraph(Vertices vertices = {}, Rules edges = {});
 
     [[nodiscard]] const auto& vertices() const { return vertices_; }
-    [[nodiscard]] const auto& edges() const { return edges_; }
+    [[nodiscard]] const auto& rules() const { return rules_; }
 
     friend std::istream& operator>>(std::istream& is, HyperGraph& graph);
     friend std::ostream& operator<<(std::ostream& os, const HyperGraph& graph);
@@ -21,7 +21,7 @@ public:
 
 private:
     Vertices vertices_;
-    Edges edges_;
+    Rules rules_;
 
     void checkVertex_(const Vertex& v) const;
 };

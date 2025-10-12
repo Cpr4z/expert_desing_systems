@@ -14,11 +14,11 @@
 #include "types/graph.hpp"
 #include "utils/io_utils.hpp"
 
-HyperGraph::HyperGraph(Vertices vertices, Edges edges)
-        : vertices_{std::move(vertices)}, edges_{std::move(edges)} {
+HyperGraph::HyperGraph(Vertices vertices, Rules rules)
+        : vertices_{std::move(vertices)}, rules_{std::move(rules)} {
     USet<size_t> ids;
 
-    for (const auto& [from, tos, id] : edges_) {
+    for (const auto& [from, tos, id, label] : rules_) {
         checkVertex_(from);
         for (auto&& to : tos) {
             checkVertex_(to);
@@ -35,7 +35,7 @@ HyperGraph::HyperGraph(Vertices vertices, Edges edges)
 void HyperGraph::checkVertex_(const Vertex& v) const {
     if (!vertices_.contains(v)) {
         throw std::invalid_argument("[HyperGraph::checkVertex_] \"" +
-                                    std::to_string(v) + "\" is not in V");
+                                    std::to_string(v.id) + "\" is not in V");
     }
 }
 
@@ -46,15 +46,14 @@ std::istream& operator>>(std::istream& is, HyperGraph& graph) {
     Vertices vertices;
 
     for (size_t i = 0; i < n; ++i) {
-        Vertex v{};
-        is >> v;
+        Vertex v;
+        is >> v.id;
         vertices.insert(v);
     }
 
     is >> n;
 
-    Edges edges;
-
+    Rules rules;
     for (size_t i = 0; i < n; ++i) {
         std::size_t id = 0;
         is >> id;
@@ -62,8 +61,8 @@ std::istream& operator>>(std::istream& is, HyperGraph& graph) {
         std::string symbol;
         is >> symbol;  // ","
 
-        Vertex from{};
-        is >> from;
+        Vertex from;
+        is >> from.id;
 
         is >> symbol;  // "->"
 
@@ -71,16 +70,16 @@ std::istream& operator>>(std::istream& is, HyperGraph& graph) {
         std::getline(is, line);
         std::stringstream ss{line};
 
-        Vertex to{};
+        Vertex to;
         Vertices tos;
-        while (ss >> to) {
+        while (ss >> to.id) {
             tos.insert(to);
         }
 
-        edges.push_back(Edge{from, std::move(tos), id});
+        rules.push_back(Rule{from, std::move(tos), id});
     }
 
-    graph = HyperGraph(std::move(vertices), std::move(edges));
+    graph = HyperGraph(std::move(vertices), std::move(rules));
 
     return is;
 }
@@ -90,9 +89,9 @@ std::ostream& operator<<(std::ostream& os, const HyperGraph& graph) {
     join(graph.vertices_, os);
     os << '\n';
 
-    os << graph.edges_.size() << '\n';
-    for (auto&& [from, to, id] : graph.edges_) {
-        os << id << ", " << from << " -> ";
+    os << graph.rules_.size() << '\n';
+    for (auto&& [from, to, id, label] : graph.rules_) {
+        os << id << ", " << from.id << " -> ";
         join(to, os);
         os << '\n';
     }

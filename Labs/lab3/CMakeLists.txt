@@ -11,6 +11,7 @@ set(HEADERS
         utils/io_utils.hpp
         graph/graph.hpp
         graph/depth_first_search.hpp
+        utils/my_stack.hpp
 )
 
 set(SOURCES
