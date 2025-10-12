@@ -52,9 +52,7 @@ void DepthFirstSearch::init(const HyperGraph& graph,
     m_forbidden_rules.clear();
     m_rules.clear();
 
-//    auto rules = graph.rules();
     m_rules = graph.rules();
-
     m_closed_vertices.insert(in_node_arr.begin(), in_node_arr.end());
     m_opened_vertices.push(goal_node);
 }
