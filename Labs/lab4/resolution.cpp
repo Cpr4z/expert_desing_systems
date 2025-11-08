@@ -1,6 +1,5 @@
 #include "resolution.hpp"
 
-#include <cstddef>
 #include <iostream>
 #include <string_view>
 #include <utility>
@@ -66,8 +65,7 @@ ResolutionResult FullResolution(const std::vector<Clause>& axioms,
     auto clause_stack = Concatenate(axioms, {inverted_target});
 
     for (size_t iteration = 0, i = 0; i < clause_stack.size() - 1;
-         ++i) {  // Проходим
-
+         ++i) {
         std::cout << "[Итерация " << iteration << "] Множество дизъюнктов: {";
         join(clause_stack, std::cout);
         std::cout << "}\n";
@@ -120,7 +118,6 @@ ResolutionResult FullResolution(const std::vector<Clause>& axioms,
     return ResolutionResult::kNoProofFound;
 }
 
-// NOLINTNEXTLINE(readability-function-cognitive-complexity)
 ResolutionResult BasicResolution(const std::vector<Clause>& axioms,
                                  const Clause& inverted_target,
                                  size_t max_iterations) {

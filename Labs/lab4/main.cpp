@@ -26,8 +26,10 @@ int main() {
 
         const std::vector<Clause> axioms = {ax1, ax2, ax3, ax4, ax5};
 
-        // тип обхода — full, basic (полный перебор, опорное мн-во)
+        // тип обхода — full (полный перебор)
         const auto res = FullResolution(axioms, ax6, 1000);
+        // тип обхода - basic (опорное мн-во)
+//        const auto res = BasicResolution(axioms, ax6, 1000);
         std::cout << '\n' << ToString(res);
     } catch (const std::exception& exception) {
         std::cerr << "[exception] " << exception.what() << '\n';

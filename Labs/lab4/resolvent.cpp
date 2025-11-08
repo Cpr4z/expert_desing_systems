@@ -49,7 +49,6 @@ std::pair<Clause, ResolventResult> CreateResolvent(const Clause& first,
     if (first_absorbed_clause.empty() || second_absorbed_clause.empty()) {
         return {{}, ResolventResult::kEmptyClause};
     }
-
     // если обе не 0
 
     // Атом из первого списка для которого ищем противоположный по знаку
@@ -73,7 +72,6 @@ std::pair<Clause, ResolventResult> CreateResolvent(const Clause& first,
                     }
                 }
             };
-
     append_resolvent_without_opposite_atom(first_absorbed_clause);
     append_resolvent_without_opposite_atom(second_absorbed_clause);
 

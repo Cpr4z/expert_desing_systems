@@ -33,7 +33,6 @@ AbsorbedClause Clause::Absorb() const {
         absorbed.push_back(atom);
         processed_atoms.emplace(atom.name, atom.sign);
     }
-
     return absorbed;
 }
 
@@ -44,6 +43,5 @@ std::ostream& operator<<(std::ostream& os, const Clause& clause) {
 }
 
 std::ostream& operator<<(std::ostream& os, const AbsorbedClause& clause) {
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-reinterpret-cast)
     return os << reinterpret_cast<const Clause&>(clause);
 }
